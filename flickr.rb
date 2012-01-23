@@ -10,6 +10,8 @@ module PoolRB
   class Flickr
 
     def initialize
+      FlickRaw.api_key = API_KEY
+      FlickRaw.shared_secret = API_SECRET
     end
 
     def is_mac?
@@ -37,9 +39,6 @@ module PoolRB
     private :go_url
 
     def do_auth
-      FlickRaw.api_key = API_KEY
-      FlickRaw.shared_secret = API_SECRET
-
       token = flickr.get_request_token
       auth_url = flickr.get_authorize_url token['oauth_token'], :perms => 'write'
 
@@ -54,6 +53,11 @@ module PoolRB
       rescue => err
         fail "Flickr API authentication failed: #{err}"
       end
+    end
+
+    def set_auth token, secret
+      flickr.access_token = token
+      flickr.access_secret = secret
     end
 
   end
