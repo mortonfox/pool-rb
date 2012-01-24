@@ -154,16 +154,45 @@ module PoolRB
       end
     end
 
+    def checkPhoto count, photo
+      puts "#{count}. Checking photo #{photo.id} \"#{photo.title}\"..."
+      puts "#{photo.views} views"
+    end
+
     def getPhotos pagenum, pagelen
       Flickr::flickr_retry { flickr.people.getPhotos :user_id => 'me', :per_page => pagelen, :page => pagenum, :extras => 'views' }
     end
 
+    def randomProbe
+      totalpics = (getPhotos 1, 1).total.to_i
+      puts "Total = #{totalpics}"
+
+      checked = {}
+      count = 0
+
+      loop do
+        picnum = 1 + rand(totalpics)
+
+        result = (getPhotos picnum, 1).first
+        id = result.id
+        if checked[id]
+          puts "Photo #{id} already checked. Skipping."
+        else
+          count += 1
+          checkPhoto count, result
+          checked[id] = true
+        end
+
+        sleep 1
+      end
+    end
   end
 end
 
 selfpool = PoolRB::SelfPool.new
-result = selfpool.getPhotos 1, 10
-puts "Total photos: #{result.total}"
-result.each { |photo|
-  puts "Photo #{photo.id} \"#{photo.title}\": #{photo.views} views"
-}
+selfpool.randomProbe
+# result = selfpool.getPhotos 1, 10
+# puts "Total photos: #{result.total}"
+# result.each { |photo|
+#   puts "Photo #{photo.id} \"#{photo.title}\": #{photo.views} views"
+# }
