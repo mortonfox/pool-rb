@@ -156,11 +156,64 @@ module PoolRB
 
     def checkPhoto count, photo
       puts "#{count}. Checking photo #{photo.id} \"#{photo.title}\"..."
-      puts "#{photo.views} views"
+      views = photo.views.to_i
+      puts "#{views} views"
+
+      results = Flickr::flickr_retry {
+        flickr.photos.getAllContexts :photo_id => photo.id
+      }
+
+      # Get a list of IDs of pools to which this photo belongs.
+      pools = {}
+      results.pool.each { |pool|
+        pools[pool.id] = true
+      }
+
+      GROUPS.each { |group|
+        if pools[group[:id]] and views < group[:lbound] || views > group[:ubound]
+          removePhotoFromGroup photo, group
+        end
+        if !pools[group[:id]] and views >= group[:lbound] && views <= group[:ubound]
+          addPhotoToGroup photo, group
+        end
+      }
     end
 
     def getPhotos pagenum, pagelen
-      Flickr::flickr_retry { flickr.people.getPhotos :user_id => 'me', :per_page => pagelen, :page => pagenum, :extras => 'views' }
+      Flickr::flickr_retry {
+        flickr.people.getPhotos :user_id => 'me', :per_page => pagelen, :page => pagenum, :extras => 'views' 
+      }
+    end
+
+    def addPhotoToGroup photo, group
+      return if group[:hitlimit]
+
+      puts "Adding photo #{photo.id} to group #{group[:name]}..."
+
+      begin
+        Flickr::flickr_retry {
+          flickr.groups.pools.add :photo_id => photo.id, :group_id => group[:id]
+        }
+      rescue FlickRaw::FailedResponse => err
+        warn "#{err.code}: #{err.msg}"
+        # Error code 5 is 'photo limit reached'. Make a note of that, so we
+        # don't try to add any more photos to this group.
+        if err.code == 5
+          group[:hitlimit] = true
+        end
+      end
+    end
+
+    def removePhotoFromGroup photo, group
+      puts "Removing photo #{photo.id} from group #{group[:name]}..."
+
+      begin
+        Flickr::flickr_retry {
+          flickr.groups.pools.remove :photo_id => photo.id, :group_id => group[:id]
+        }
+      rescue FlickRaw::FailedResponse => err
+        warn "#{err.code}: #{err.msg}"
+      end
     end
 
     def randomProbe

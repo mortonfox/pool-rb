@@ -71,11 +71,12 @@ module PoolRB
         yield
       rescue FlickRaw::FailedResponse => err
         retry_count += 1
-        if retry_count <= MAX_RETRY
+        # Error code 5 is 'photo limit reached'. Don't retry that.
+        if err.code != 5 and retry_count <= MAX_RETRY
           sleep RETRY_WAIT
           retry
         end
-        fail "Error calling Flickr API: #{err}"
+        raise
       end
     end
   end
