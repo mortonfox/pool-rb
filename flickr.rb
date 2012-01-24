@@ -4,10 +4,13 @@ require 'rbconfig'
 
 module PoolRB
 
-  API_KEY = 'db6b5b84eaba843fa20b0ce120d200c0'
-  API_SECRET = 'dbfb3978910bfc79'
-
   class Flickr
+
+    API_KEY = 'db6b5b84eaba843fa20b0ce120d200c0'
+    API_SECRET = 'dbfb3978910bfc79'
+
+    MAX_RETRY = 5
+    RETRY_WAIT = 0.5
 
     def initialize
       FlickRaw.api_key = API_KEY
@@ -50,7 +53,9 @@ module PoolRB
         flickr.get_access_token token['oauth_token'], token['oauth_token_secret'], verify
         login = flickr.test.login
         puts "Authenticated as #{login.username} with token #{flickr.access_token} and secret #{flickr.access_secret}" if $DEBUG
-      rescue => err
+
+        return [ flickr.access_token, flickr.access_secret ]
+      rescue FlickRaw::FailedResponse => err
         fail "Flickr API authentication failed: #{err}"
       end
     end
@@ -60,6 +65,19 @@ module PoolRB
       flickr.access_secret = secret
     end
 
+    def self.flickr_retry 
+      retry_count = 0
+      begin
+        yield
+      rescue FlickRaw::FailedResponse => err
+        retry_count += 1
+        if retry_count <= MAX_RETRY
+          sleep RETRY_WAIT
+          retry
+        end
+        fail "Error calling Flickr API: #{err}"
+      end
+    end
   end
 end
 
