@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'flickr'
 require 'database'
+require 'log'
 
 module PoolRB
 
@@ -144,6 +145,7 @@ module PoolRB
     def initialize
       @db = Database.new
       @flickr = Flickr.new
+      @log = Log.new 'sf'
 
       token, secret = @db.get_token SERVICE_NAME
       if token
@@ -156,8 +158,12 @@ module PoolRB
 
     def checkPhoto count, photo
       puts "#{count}. Checking photo #{photo.id} \"#{photo.title}\"..."
+      @log.puts "#{count}. Checking photo <a href=\"http://www.flickr.com/#{photo.owner}/#{photo.id}\">#{photo.id} \"#{photo.title}\"</a>..."
+
       views = photo.views.to_i
+
       puts "#{views} views"
+      @log.puts "#{views} views"
 
       results = Flickr::flickr_retry {
         flickr.photos.getAllContexts :photo_id => photo.id
@@ -189,6 +195,7 @@ module PoolRB
       return if group[:hitlimit]
 
       puts "Adding photo #{photo.id} to group #{group[:name]}..."
+      @log.puts "Adding photo #{photo.id} to group #{group[:name]}..."
 
       begin
         Flickr::flickr_retry {
@@ -196,6 +203,7 @@ module PoolRB
         }
       rescue FlickRaw::FailedResponse => err
         warn "#{err.code}: #{err.msg}"
+        @log.puts "#{err.code}: #{err.msg}"
         # Error code 5 is 'photo limit reached'. Make a note of that, so we
         # don't try to add any more photos to this group.
         if err.code == 5
@@ -206,6 +214,7 @@ module PoolRB
 
     def removePhotoFromGroup photo, group
       puts "Removing photo #{photo.id} from group #{group[:name]}..."
+      @log.puts "Removing photo #{photo.id} from group #{group[:name]}..."
 
       begin
         Flickr::flickr_retry {
@@ -213,12 +222,14 @@ module PoolRB
         }
       rescue FlickRaw::FailedResponse => err
         warn "#{err.code}: #{err.msg}"
+        @log.puts "#{err.code}: #{err.msg}"
       end
     end
 
     def randomProbe
       totalpics = (getPhotos 1, 1).total.to_i
       puts "Total = #{totalpics}"
+      @log.puts "Total = #{totalpics}"
 
       checked = {}
       count = 0
@@ -230,6 +241,7 @@ module PoolRB
         id = result.id
         if checked[id]
           puts "Photo #{id} already checked. Skipping."
+          @log.puts "Photo #{id} already checked. Skipping."
         else
           count += 1
           checkPhoto count, result
@@ -244,8 +256,3 @@ end
 
 selfpool = PoolRB::SelfPool.new
 selfpool.randomProbe
-# result = selfpool.getPhotos 1, 10
-# puts "Total photos: #{result.total}"
-# result.each { |photo|
-#   puts "Photo #{photo.id} \"#{photo.title}\": #{photo.views} views"
-# }
