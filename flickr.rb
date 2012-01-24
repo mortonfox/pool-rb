@@ -65,14 +65,23 @@ module PoolRB
       flickr.access_secret = secret
     end
 
+    # Don't retry the following errors.
+    PASSTHRU_ERRORS = {
+      3 => true, # already in pool
+      4 => true, # maximum number of pools
+      5 => true, # photo limit reached
+      6 => true, # added to pending queue
+      7 => true, # already in pending queue
+      10 => true, # maximum photos in pool
+    }
+
     def self.flickr_retry 
       retry_count = 0
       begin
         yield
       rescue FlickRaw::FailedResponse => err
         retry_count += 1
-        # Error code 5 is 'photo limit reached'. Don't retry that.
-        if err.code != 5 and retry_count <= MAX_RETRY
+        if !PASSTHRU_ERRORS[err.code] and retry_count <= MAX_RETRY
           sleep RETRY_WAIT
           retry
         end
