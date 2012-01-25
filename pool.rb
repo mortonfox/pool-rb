@@ -2,6 +2,7 @@ require 'rubygems'
 require 'flickr'
 require 'database'
 require 'log'
+require 'optparse'
 
 module PoolRB
 
@@ -80,15 +81,67 @@ module PoolRB
       rejectPhotos group[:id], result, group[:range]
     end
 
+    # Clean the first (latest) page of each group.
     def cleanFirstPages
       GROUPS.each { |gkey, group|
         processPage 1, group
       }
     end
+
+    # Clean random pages chosen from all the groups.
+    def cleanRandomPages
+      pagetotals = {}
+      totalpages = 0
+      GROUPS.each { |gkey, group|
+        result = getPhotos group[:id], 1
+        pagetotals[gkey] = result.pages
+        totalpages += result.pages
+      }
+
+      loop do
+        i = rand totalpages
+
+        pagetotals.each { |gkey, pages|
+          if i < pages
+            processPage i+1, GROUPS[gkey]
+            break
+          end
+          i -= pages
+        }
+      end
+    end
   end
 end
 
-selfpool = PoolRB::CleanPool.new 
-selfpool.cleanFirstPages
+do_what = :first
+
+opts = OptionParser.new { |opts|
+  opts.banner = "Usage: #{$0} [options]"
+  opts.on('-r', '--random', 'Clean random pages chosen from all groups.') { 
+    do_what = :random
+  }
+  opts.on('-f', '--first', 'Clean first (latest) page of every group.') { 
+    do_what = :first
+  }
+  opts.on_tail('-h', '-?', '--help', 'Show this message') {
+    puts opts
+    exit
+  }
+}
+
+begin
+  opts.parse! ARGV
+rescue => err
+  warn "Error parsing command line: #{err}"
+  warn opts
+  exit 1
+end
+
+pool = PoolRB::CleanPool.new 
+if do_what == :first
+  pool.cleanFirstPages
+else
+  pool.cleanRandomPages
+end
 
 # -- END --
