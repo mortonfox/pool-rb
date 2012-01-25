@@ -67,7 +67,7 @@ module PoolRB
 
     # Don't retry the following errors.
     PASSTHRU_ERRORS = {
-      3 => true, # already in pool
+      3 => true, # already in pool if adding photo / insufficient permission to remove photo
       4 => true, # maximum number of pools
       5 => true, # photo limit reached
       6 => true, # added to pending queue
