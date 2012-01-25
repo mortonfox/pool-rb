@@ -256,3 +256,5 @@ end
 
 selfpool = PoolRB::SelfPool.new
 selfpool.randomProbe
+
+# -- END --

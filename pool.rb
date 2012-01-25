@@ -9,6 +9,8 @@ module PoolRB
 
     SERVICE_NAME = 'pool'
 
+    PAGELEN = 100
+
     GROUPS = {
       25 => { :name => "1-25 Views", :id => '66969363@N00', :range => 0..25 },
       50 => { :name => "25-50 Views", :id => '55265535@N00', :range => 25..50 },
@@ -32,9 +34,9 @@ module PoolRB
       end
     end
 
-    def getPhotos groupid, pagenum, pagelen
+    def getPhotos groupid, pagenum
       Flickr::flickr_retry {
-        flickr.groups.pools.getPhotos :group_id => groupid, :per_page => pagelen, :page => pagenum, :extras => 'views'
+        flickr.groups.pools.getPhotos :group_id => groupid, :per_page => PAGELEN, :page => pagenum, :extras => 'views'
       }
     end
 
@@ -47,10 +49,11 @@ module PoolRB
 
       i = 0
       photos.each { |photo|
-        if !range.cover?(photo.views)
+        views = photo.views.to_i
+        if !range.cover?(views)
           i += 1
           url = "http://www.flickr.com/photos/#{photo.owner}/#{photo.id}";
-          @log.puts "#{i}. <a href=\"#{url}\">#{photo.id}</a>: #{photo.title} by #{photo.ownername}, <b>#{photo.views}</b> views"
+          @log.puts "#{i}. <a href=\"#{url}\">#{photo.id}</a>: #{photo.title} by #{photo.ownername}, <b>#{views}</b> views"
           puts "#{i}. Rejecting photo #{photo.id}..."
           
           next if @testmode
@@ -59,6 +62,7 @@ module PoolRB
             Flickr::flickr_retry {
               flickr.groups.pools.remove :group_id => groupid, :photo_id => photo.id
             }
+            sleep 0.5
           rescue FlickRaw::FailedResponse => err
             warn "Failed to remove photo #{photo.id}: #{err.code} #{err.msg}"
             @log.puts "Failed to remove photo #{photo.id}: #{err.code} #{err.msg}"
@@ -66,8 +70,25 @@ module PoolRB
         end
       }
     end
+
+    def processPage pagenum, group
+      result = getPhotos group[:id], pagenum
+
+      puts "=== Group #{group[:name]}: page #{pagenum} of #{result.pages} ==="
+      @log.puts "<h2>Group #{group[:name]}: page #{pagenum} of #{result.pages}</h2>"
+
+      rejectPhotos group[:id], result, group[:range]
+    end
+
+    def cleanFirstPages
+      GROUPS.each { |gkey, group|
+        processPage 1, group
+      }
+    end
   end
 end
 
-if __FILE__ == $0
-end
+selfpool = PoolRB::CleanPool.new 
+selfpool.cleanFirstPages
+
+# -- END --
