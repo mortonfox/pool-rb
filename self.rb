@@ -1,7 +1,6 @@
-require 'rubygems'
-require 'flickr'
-require 'database'
-require 'log'
+require_relative 'flickr'
+require_relative 'database'
+require_relative 'log'
 
 module PoolRB
 

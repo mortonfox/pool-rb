@@ -1,5 +1,3 @@
-require 'rubygems'
-
 module PoolRB
 
   class Log
