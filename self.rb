@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require_relative 'flickr'
 require_relative 'database'
 require_relative 'log'
