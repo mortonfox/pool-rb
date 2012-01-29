@@ -78,9 +78,16 @@ module PoolRB
       retry_count = 0
       begin
         yield
-      rescue FlickRaw::FailedResponse, Timeout::Error => err
+      rescue FlickRaw::FailedResponse => err
         retry_count += 1
         if !PASSTHRU_ERRORS[err.code] and retry_count <= MAX_RETRY
+          sleep RETRY_WAIT
+          retry
+        end
+        raise
+      rescue Timeout::Error => err
+        retry_count += 1
+        if retry_count <= MAX_RETRY
           sleep RETRY_WAIT
           retry
         end
