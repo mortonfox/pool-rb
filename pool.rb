@@ -138,11 +138,15 @@ rescue => err
   exit 1
 end
 
-pool = PoolRB::CleanPool.new 
-if do_what == :first
-  pool.cleanFirstPages
-else
-  pool.cleanRandomPages
+begin
+  pool = PoolRB::CleanPool.new 
+  if do_what == :first
+    pool.cleanFirstPages
+  else
+    pool.cleanRandomPages
+  end
+rescue Interrupt
+  warn "Interrupted! Exiting..."
 end
 
 # -- END --

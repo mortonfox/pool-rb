@@ -257,7 +257,11 @@ module PoolRB
   end
 end
 
-selfpool = PoolRB::SelfPool.new
-selfpool.randomProbe
+begin
+  selfpool = PoolRB::SelfPool.new
+  selfpool.randomProbe
+rescue Interrupt
+  warn "Interrupted! Exiting..."
+end
 
 # -- END --
