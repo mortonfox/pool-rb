@@ -172,7 +172,9 @@ module PoolRB
 
       # Get a list of IDs of pools to which this photo belongs.
       pools = {}
-      results.pool.each { |pool|
+      # results['pool'] may be nil if the photo doesn't belong to any
+      # group. Coerce it to an array to guard against that.
+      results['pool'].to_a.each { |pool|
         pools[pool.id] = true
       }
 
