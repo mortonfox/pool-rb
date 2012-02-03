@@ -54,7 +54,7 @@ module PoolRB
         puts "Authenticated as #{login.username} with token #{flickr.access_token} and secret #{flickr.access_secret}" if $DEBUG
 
         return [ flickr.access_token, flickr.access_secret ]
-      rescue FlickRaw::FailedResponse, Timeout::Error, Errno::ENOENT, Errno::ETIMEDOUT, Errno::ECONNRESET => err
+      rescue EOFError, FlickRaw::FailedResponse, Timeout::Error, Errno::ENOENT, Errno::ETIMEDOUT, Errno::ECONNRESET => err
         fail "Flickr API authentication failed: #{err}"
       end
     end
@@ -85,7 +85,7 @@ module PoolRB
           retry
         end
         raise
-      rescue Timeout::Error, Errno::ENOENT, Errno::ETIMEDOUT, Errno::ECONNRESET => err
+      rescue EOFError, Timeout::Error, Errno::ENOENT, Errno::ETIMEDOUT, Errno::ECONNRESET => err
         retry_count += 1
         if retry_count <= MAX_RETRY
           sleep RETRY_WAIT
