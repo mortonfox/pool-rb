@@ -46,7 +46,7 @@ module PoolRB
       { :name => "50 to 99 views", :id => '47017726@N00', :range => 50..99 },
       { :name => "Centurian Club", :id => '38475367@N00', :range => 100..199 },
       { :name => "200 Views", :id => '12476408@N00', :range => 200..299 },    
-      { :name => "200 Views (freeminded)", :id => '23348528@N00', :range => 200..299 },
+#      { :name => "200 Views (freeminded)", :id => '23348528@N00', :range => 200..299 },
       { :name => "100 Views", :id => '49688781@N00', :range => 100..199 },
       { :name => "100 Views - 200", :id => '49864370@N00', :range => 100..199 },
       { :name => "300 Views - 499", :id => '94294471@N00', :range => 300..499 },
