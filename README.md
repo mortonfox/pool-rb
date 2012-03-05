@@ -7,10 +7,12 @@ Views groups are Flickr groups that allow you to add only photos with a certain 
 This script moderates one or more Flickr views groups, removing any photos it finds that violate the group views restriction. Group info is hardcoded in `PoolRB::CleanPool::GROUPS` in the script. The script operates in two modes:
 
 * `pool.rb -f` (or simply `pool.rb`)
-Clean up the first page (one page = 100 photos) in each group.
+
+    Clean up the first page (one page = 100 photos) in each group.
 
 * `pool.rb -r`
-Clean up pages chosen at random from the groups until you stop the script.
+
+    Clean up pages chosen at random from the groups until you stop the script.
 
 In the latter mode, random probing ensures that the script will cover all the groups evenly if you run it long enough. In practice, running it for 5 to 10 minutes a day is enough to keep groups relatively clean.
 
