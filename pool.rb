@@ -82,10 +82,14 @@ module PoolRB
       rejectPhotos group[:id], result, group[:range]
     end
 
-    # Clean the first (latest) page of each group.
+    # Clean the pages of each group in order from most recent to oldest.
     def cleanFirstPages
-      GROUPS.each { |gkey, group|
-        processPage 1, group
+      pagenum = 1
+      loop {
+        GROUPS.each { |gkey, group|
+          processPage pagenum, group
+        }
+        pagenum += 1
       }
     end
 
@@ -121,7 +125,7 @@ opts = OptionParser.new { |opts|
   opts.on('-r', '--random', 'Clean random pages chosen from all groups.') { 
     do_what = :random
   }
-  opts.on('-f', '--first', 'Clean first (latest) page of every group.') { 
+  opts.on('-f', '--first', 'Clean pages from newest to oldest of every group.') { 
     do_what = :first
   }
   opts.on_tail('-h', '-?', '--help', 'Show this message') {
