@@ -82,19 +82,7 @@ module PoolRB
       rejectPhotos group[:id], result, group[:range]
     end
 
-    # Clean the pages of each group in order from most recent to oldest.
-    def cleanFirstPages
-      pagenum = 1
-      loop {
-        GROUPS.each { |gkey, group|
-          processPage pagenum, group
-        }
-        pagenum += 1
-      }
-    end
-
-    # Clean random pages chosen from all the groups.
-    def cleanRandomPages
+    def getPageTotals
       pagetotals = {}
       totalpages = 0
       GROUPS.each { |gkey, group|
@@ -102,6 +90,30 @@ module PoolRB
         pagetotals[gkey] = result.pages
         totalpages += result.pages
       }
+      [ totalpages, pagetotals ]
+    end
+
+    # Clean the pages of each group in order from most recent to oldest.
+    def cleanFirstPages
+      totalpages, pagetotals = getPageTotals
+
+      pagenum = 1
+      loop {
+        didwork = false
+        GROUPS.each { |gkey, group|
+          if pagenum <= pagetotals[gkey]
+            processPage pagenum, group
+            didwork = true
+          end
+        }
+        break unless didwork
+        pagenum += 1
+      }
+    end
+
+    # Clean random pages chosen from all the groups.
+    def cleanRandomPages
+      totalpages, pagetotals = getPageTotals
 
       loop do
         i = rand totalpages
