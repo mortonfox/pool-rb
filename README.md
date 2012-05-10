@@ -8,7 +8,7 @@ This script moderates one or more Flickr views groups, removing any photos it fi
 
 * `pool.rb -f` (or simply `pool.rb`)
 
-    Clean up the first page (one page = 100 photos) in each group.
+    Clean up all the groups, starting from the first page (one page = 100 photos) until it reaches the last page or is interrupted.
 
 * `pool.rb -r`
 
