@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'sqlite3'
 
 module PoolRB

@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require_relative 'flickr'
-require_relative 'database'
-require_relative 'log'
+require File.expand_path(File.dirname(__FILE__) + '/flickr')
+require File.expand_path(File.dirname(__FILE__) + '/database')
+require File.expand_path(File.dirname(__FILE__) + '/log')
 require 'optparse'
 
 module PoolRB
