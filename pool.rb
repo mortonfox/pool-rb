@@ -56,7 +56,7 @@ module PoolRB
           i += 1
           url = "http://www.flickr.com/photos/#{photo.owner}/#{photo.id}";
           @log.puts "#{i}. <a href=\"#{url}\">#{photo.id}</a>: #{photo.title} by #{photo.ownername}, <b>#{views}</b> views"
-          puts "#{i}. Rejecting photo #{photo.id}..."
+          puts "#{i}. Rejecting photo #{photo.id} (#{views} views) ..."
           
           next if @testmode
 
