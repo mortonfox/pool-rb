@@ -4,7 +4,7 @@ module PoolRB
 
     def initialize prefix, path = nil, title = nil
       path ||= './logs'
-      fname = "#{path}/#{prefix}#{"%08X" % Time.now.to_i}.htm"
+      fname = File.join path, "#{prefix}#{"%08X" % Time.now.to_i}.htm"
       @file = File.open fname, 'w'
       @file.sync = true
 

@@ -1,8 +1,16 @@
 #!/usr/bin/env ruby
 
-require File.expand_path(File.dirname(__FILE__) + '/flickr')
-require File.expand_path(File.dirname(__FILE__) + '/database')
-require File.expand_path(File.dirname(__FILE__) + '/log')
+unless Kernel.respond_to? :require_relative
+  module Kernel
+    def require_relative modname
+      require File.join(File.dirname(__FILE__), modname)
+    end
+  end
+end
+
+require_relative 'flickr'
+require_relative 'database'
+require_relative 'log'
 require 'optparse'
 
 module PoolRB
