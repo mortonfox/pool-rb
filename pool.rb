@@ -60,7 +60,7 @@ module PoolRB
       i = 0
       photos.each { |photo|
         views = photo.views.to_i
-        if !range.cover?(views)
+        unless range.cover?(views)
           i += 1
           url = "http://www.flickr.com/photos/#{photo.owner}/#{photo.id}"
           @log.puts "#{i}. <a href=\"#{url}\">#{photo.id}</a>: #{photo.title} by #{photo.ownername}, <b>#{views}</b> views"
