@@ -22,11 +22,11 @@ module PoolRB
     PAGELEN = 100
 
     GROUPS = {
-      25 => { :name => "1-25 Views", :id => '66969363@N00', :range => 0..25 },
-      50 => { :name => "25-50 Views", :id => '55265535@N00', :range => 25..50 },
-      75 => { :name => "50-75 Views", :id => '38541060@N00', :range => 50..75 },
-      100 => { :name => "75-100 Views", :id => '45499242@N00', :range => 75..100 },
-      200 => { :name => "150-200 Views", :id => '57008537@N00', :range => 150..200 },
+      25 => { :name => '1-25 Views', :id => '66969363@N00', :range => 0..25 },
+      50 => { :name => '25-50 Views', :id => '55265535@N00', :range => 25..50 },
+      75 => { :name => '50-75 Views', :id => '38541060@N00', :range => 50..75 },
+      100 => { :name => '75-100 Views', :id => '45499242@N00', :range => 75..100 },
+      200 => { :name => '150-200 Views', :id => '57008537@N00', :range => 150..200 },
     }
 
     def initialize testmode = false
@@ -45,7 +45,7 @@ module PoolRB
     end
 
     def getPhotos groupid, pagenum
-      Flickr::flickr_retry {
+      Flickr.flickr_retry {
         flickr.groups.pools.getPhotos :group_id => groupid, :per_page => PAGELEN, :page => pagenum, :extras => 'views'
       }
     end
@@ -53,8 +53,8 @@ module PoolRB
     # Remove photos that don't belong to the group.
     def rejectPhotos groupid, photos, range
       if @testmode
-        puts "Test mode. Photos will not be removed."
-        @log.puts "Test mode. Photos will not be removed."
+        puts 'Test mode. Photos will not be removed.'
+        @log.puts 'Test mode. Photos will not be removed.'
       end
 
       i = 0
@@ -62,14 +62,14 @@ module PoolRB
         views = photo.views.to_i
         if !range.cover?(views)
           i += 1
-          url = "http://www.flickr.com/photos/#{photo.owner}/#{photo.id}";
+          url = "http://www.flickr.com/photos/#{photo.owner}/#{photo.id}"
           @log.puts "#{i}. <a href=\"#{url}\">#{photo.id}</a>: #{photo.title} by #{photo.ownername}, <b>#{views}</b> views"
           puts "#{i}. Rejecting photo #{photo.id} (#{views} views) ..."
-          
+
           next if @testmode
 
           begin
-            Flickr::flickr_retry {
+            Flickr.flickr_retry {
               flickr.groups.pools.remove :group_id => groupid, :photo_id => photo.id
             }
             sleep 0.5
@@ -103,7 +103,7 @@ module PoolRB
 
     # Clean the pages of each group in order from most recent to oldest.
     def cleanFirstPages
-      totalpages, pagetotals = getPageTotals
+      _, pagetotals = getPageTotals
 
       pagenum = 1
       loop {
@@ -128,7 +128,7 @@ module PoolRB
 
         pagetotals.each { |gkey, pages|
           if i < pages
-            processPage i+1, GROUPS[gkey]
+            processPage i + 1, GROUPS[gkey]
             break
           end
           i -= pages
@@ -142,10 +142,10 @@ do_what = :first
 
 opts = OptionParser.new { |opts|
   opts.banner = "Usage: #{$0} [options]"
-  opts.on('-r', '--random', 'Clean random pages chosen from all groups.') { 
+  opts.on('-r', '--random', 'Clean random pages chosen from all groups.') {
     do_what = :random
   }
-  opts.on('-f', '--first', 'Clean pages from newest to oldest of every group.') { 
+  opts.on('-f', '--first', 'Clean pages from newest to oldest of every group.') {
     do_what = :first
   }
   opts.on_tail('-h', '-?', '--help', 'Show this message') {
@@ -163,14 +163,14 @@ rescue => err
 end
 
 begin
-  pool = PoolRB::CleanPool.new 
+  pool = PoolRB::CleanPool.new
   if do_what == :first
     pool.cleanFirstPages
   else
     pool.cleanRandomPages
   end
 rescue Interrupt
-  warn "Interrupted! Exiting..."
+  warn 'Interrupted! Exiting...'
 end
 
 # -- END --

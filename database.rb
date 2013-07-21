@@ -35,14 +35,14 @@ SELECT `token`, `secret` FROM `tokens` WHERE `service` = ?
       @db.execute(stmt, service) { |row|
         return row
       }
-      return [ nil, nil ]
+      [ nil, nil ]
     end
   end
 end
 
 if __FILE__ == $0
   db = PoolRB::Database.new
-  db.add_token "hello", "1", "2"
+  db.add_token 'hello', '1', '2'
   token, secret = db.get_token 'hello'
   puts "token = #{token}, secret = #{secret}"
 end

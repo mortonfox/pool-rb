@@ -12,7 +12,6 @@ Range.class_eval do
   end
 end
 
-
 module PoolRB
 
   class Flickr
@@ -45,8 +44,8 @@ module PoolRB
     def go_url url
       result = nil
       result = system "open '#{url}'" if is_mac?
-      if not result
-        puts "Open this URL in your browser to complete the authentication process:"
+      unless result
+        puts 'Open this URL in your browser to complete the authentication process:'
         puts url
       end
     end
@@ -57,7 +56,7 @@ module PoolRB
       auth_url = flickr.get_authorize_url token['oauth_token'], :perms => 'write'
 
       go_url auth_url
-      sync_stdout { print "Enter authorization code: " }
+      sync_stdout { print 'Enter authorization code: ' }
       verify = gets.strip
 
       begin
@@ -86,7 +85,7 @@ module PoolRB
       10 => true, # maximum photos in pool
     }
 
-    def self.flickr_retry 
+    def self.flickr_retry
       retry_count = 0
       begin
         yield
