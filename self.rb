@@ -286,15 +286,26 @@ module PoolRB
       loop do
         picnum = 1 + rand(totalpics)
 
-        result = (getPhotos picnum, 1).first
-        id = result.id
-        if checked[id]
-          puts "Photo #{id} already checked. Skipping."
-          @log.puts "Photo #{id} already checked. Skipping."
-        else
-          count += 1
-          checkPhoto count, result
-          checked[id] = true
+        begin
+
+          result = (getPhotos picnum, 1).first
+          id = result.id
+          if checked[id]
+            puts "Photo #{id} already checked. Skipping."
+            @log.puts "Photo #{id} already checked. Skipping."
+          else
+            count += 1
+            checkPhoto count, result
+            checked[id] = true
+          end
+
+        rescue => err
+
+          $stderr.puts "randomProbe error: #{err}"
+          $stderr.puts err.backtrace
+          @log.puts "randomProbe error: #{err}"
+          @log.puts err.backtrace
+
         end
 
         sleep 1

@@ -84,8 +84,11 @@ module PoolRB
     def processPage pagenum, group
       result = getPhotos group[:id], pagenum
 
-      puts "=== Group #{group[:name]}: page #{pagenum} of #{result.pages} ==="
-      @log.puts "<h2>Group #{group[:name]}: page #{pagenum} of #{result.pages}</h2>"
+      pages = '???'
+      pages = result.pages if result.respond_to? :pages
+
+      puts "=== Group #{group[:name]}: page #{pagenum} of #{pages} ==="
+      @log.puts "<h2>Group #{group[:name]}: page #{pagenum} of #{pages}</h2>"
 
       rejectPhotos group[:id], result, group[:range]
     end
@@ -140,7 +143,7 @@ end
 
 do_what = :first
 
-opts = OptionParser.new { |opts|
+options = OptionParser.new { |opts|
   opts.banner = "Usage: #{$0} [options]"
   opts.on('-r', '--random', 'Clean random pages chosen from all groups.') {
     do_what = :random
@@ -155,10 +158,10 @@ opts = OptionParser.new { |opts|
 }
 
 begin
-  opts.parse! ARGV
+  options.parse! ARGV
 rescue => err
   warn "Error parsing command line: #{err}"
-  warn opts
+  warn options
   exit 1
 end
 
