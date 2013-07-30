@@ -81,16 +81,34 @@ module PoolRB
       }
     end
 
+    def general_retry
+      retry_count = 0
+      begin
+        yield
+      rescue => err
+        if retry_count < 3
+          retry_count += 1
+          puts "Error: #{err}. Retrying..."
+          @log.puts "Error: #{err}. Retrying..."
+          sleep 1
+          retry
+        end
+
+        $stderr.puts "Error: #{err}"
+        @log.puts "Error: #{err}"
+      end
+    end
+
     def processPage pagenum, group
-      result = getPhotos group[:id], pagenum
+      general_retry {
+        result = getPhotos group[:id], pagenum
+        pages = result.pages
 
-      pages = '???'
-      pages = result.pages if result.respond_to? :pages
+        puts "=== Group #{group[:name]}: page #{pagenum} of #{pages} ==="
+        @log.puts "<h2>Group #{group[:name]}: page #{pagenum} of #{pages}</h2>"
 
-      puts "=== Group #{group[:name]}: page #{pagenum} of #{pages} ==="
-      @log.puts "<h2>Group #{group[:name]}: page #{pagenum} of #{pages}</h2>"
-
-      rejectPhotos group[:id], result, group[:range]
+        rejectPhotos group[:id], result, group[:range]
+      }
     end
 
     def getPageTotals
