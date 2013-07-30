@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 unless Kernel.respond_to? :require_relative
+  # Add require_relative shim.
   module Kernel
     def require_relative modname
       require File.join(File.dirname(__FILE__), modname)
@@ -14,6 +15,7 @@ require_relative 'log'
 
 module PoolRB
 
+  # Move own photos in or out of views groups.
   class SelfPool
 
     SERVICE_NAME = 'self'
@@ -203,7 +205,7 @@ module PoolRB
       end
     end
 
-    def checkPhoto count, photo
+    def check_photo count, photo
       puts "#{count}. Checking photo #{photo.id} \"#{photo.title}\"..."
       @log.puts "#{count}. Checking photo <a href=\"http://www.flickr.com/#{photo.owner}/#{photo.id}\">#{photo.id} \"#{photo.title}\"</a>..."
 
@@ -226,21 +228,21 @@ module PoolRB
 
       GROUPS.each { |group|
         if pools[group[:id]] and !group[:range].cover?(views)
-          removePhotoFromGroup photo, group
+          remove_photo_from_group photo, group
         end
         if !pools[group[:id]] and group[:range].cover?(views)
-          addPhotoToGroup photo, group
+          add_photo_to_group photo, group
         end
       }
     end
 
-    def getPhotos pagenum, pagelen
+    def get_photos pagenum, pagelen
       Flickr.flickr_retry {
         flickr.people.getPhotos :user_id => 'me', :per_page => pagelen, :page => pagenum, :extras => 'views'
       }
     end
 
-    def addPhotoToGroup photo, group
+    def add_photo_to_group photo, group
       return if group[:hitlimit]
 
       puts "Adding photo #{photo.id} to group #{group[:name]}..."
@@ -261,7 +263,7 @@ module PoolRB
       end
     end
 
-    def removePhotoFromGroup photo, group
+    def remove_photo_from_group photo, group
       puts "Removing photo #{photo.id} from group #{group[:name]}..."
       @log.puts "Removing photo #{photo.id} from group #{group[:name]}..."
 
@@ -275,8 +277,8 @@ module PoolRB
       end
     end
 
-    def randomProbe
-      totalpics = (getPhotos 1, 1).total.to_i
+    def random_probe
+      totalpics = (get_photos 1, 1).total.to_i
       puts "Total = #{totalpics}"
       @log.puts "Total = #{totalpics}"
 
@@ -288,22 +290,22 @@ module PoolRB
 
         begin
 
-          result = (getPhotos picnum, 1).first
+          result = (get_photos picnum, 1).first
           id = result.id
           if checked[id]
             puts "Photo #{id} already checked. Skipping."
             @log.puts "Photo #{id} already checked. Skipping."
           else
             count += 1
-            checkPhoto count, result
+            check_photo count, result
             checked[id] = true
           end
 
         rescue => err
 
-          $stderr.puts "randomProbe error: #{err}"
+          $stderr.puts "random_probe error: #{err}"
           $stderr.puts err.backtrace
-          @log.puts "randomProbe error: #{err}"
+          @log.puts "random_probe error: #{err}"
           @log.puts err.backtrace
 
         end
@@ -316,7 +318,7 @@ end
 
 begin
   selfpool = PoolRB::SelfPool.new
-  selfpool.randomProbe
+  selfpool.random_probe
 rescue Interrupt
   warn 'Interrupted! Exiting...'
 end
