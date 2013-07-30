@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 unless Kernel.respond_to? :require_relative
+  # Add require_relative shim for Ruby 1.8 compatibility.
   module Kernel
     def require_relative modname
       require File.join(File.dirname(__FILE__), modname)
@@ -15,6 +16,7 @@ require 'optparse'
 
 module PoolRB
 
+  # Clean Flickr views groups that we manage.
   class CleanPool
 
     SERVICE_NAME = 'pool'
@@ -44,14 +46,14 @@ module PoolRB
       end
     end
 
-    def getPhotos groupid, pagenum
+    def get_photos groupid, pagenum
       Flickr.flickr_retry {
         flickr.groups.pools.getPhotos :group_id => groupid, :per_page => PAGELEN, :page => pagenum, :extras => 'views'
       }
     end
 
     # Remove photos that don't belong to the group.
-    def rejectPhotos groupid, photos, range
+    def reject_photos groupid, photos, range
       if @testmode
         puts 'Test mode. Photos will not be removed.'
         @log.puts 'Test mode. Photos will not be removed.'
@@ -99,23 +101,23 @@ module PoolRB
       end
     end
 
-    def processPage pagenum, group
+    def process_page pagenum, group
       general_retry {
-        result = getPhotos group[:id], pagenum
+        result = get_photos group[:id], pagenum
         pages = result.pages
 
         puts "=== Group #{group[:name]}: page #{pagenum} of #{pages} ==="
         @log.puts "<h2>Group #{group[:name]}: page #{pagenum} of #{pages}</h2>"
 
-        rejectPhotos group[:id], result, group[:range]
+        reject_photos group[:id], result, group[:range]
       }
     end
 
-    def getPageTotals
+    def get_page_totals
       pagetotals = {}
       totalpages = 0
       GROUPS.each { |gkey, group|
-        result = getPhotos group[:id], 1
+        result = get_photos group[:id], 1
         pagetotals[gkey] = result.pages
         totalpages += result.pages
       }
@@ -123,15 +125,15 @@ module PoolRB
     end
 
     # Clean the pages of each group in order from most recent to oldest.
-    def cleanFirstPages
-      _, pagetotals = getPageTotals
+    def clean_first_pages
+      _, pagetotals = get_page_totals
 
       pagenum = 1
       loop {
         didwork = false
         GROUPS.each { |gkey, group|
           if pagenum <= pagetotals[gkey]
-            processPage pagenum, group
+            process_page pagenum, group
             didwork = true
           end
         }
@@ -141,15 +143,15 @@ module PoolRB
     end
 
     # Clean random pages chosen from all the groups.
-    def cleanRandomPages
-      totalpages, pagetotals = getPageTotals
+    def clean_random_pages
+      totalpages, pagetotals = get_page_totals
 
       loop do
         i = rand totalpages
 
         pagetotals.each { |gkey, pages|
           if i < pages
-            processPage i + 1, GROUPS[gkey]
+            process_page i + 1, GROUPS[gkey]
             break
           end
           i -= pages
@@ -186,9 +188,9 @@ end
 begin
   pool = PoolRB::CleanPool.new
   if do_what == :first
-    pool.cleanFirstPages
+    pool.clean_first_pages
   else
-    pool.cleanRandomPages
+    pool.clean_random_pages
   end
 rescue Interrupt
   warn 'Interrupted! Exiting...'
