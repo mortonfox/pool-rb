@@ -1,5 +1,6 @@
 module PoolRB
 
+  # Functions for writing messages to a HTML log file.
   class Log
 
     def initialize prefix, path = nil, title = nil

@@ -14,6 +14,7 @@ end
 
 module PoolRB
 
+  # Functions for working with Flickr API.
   class Flickr
 
     API_KEY = 'db6b5b84eaba843fa20b0ce120d200c0'

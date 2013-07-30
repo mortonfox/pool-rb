@@ -1,10 +1,12 @@
 require 'rubygems'
 require 'sqlite3'
 
+# Pool module.
 module PoolRB
 
   DB_FNAME = 'poolrb.db'
 
+  # Functions for working with SQLite3 database.
   class Database
 
     def initialize
