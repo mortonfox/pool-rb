@@ -1,3 +1,7 @@
+# Utility functions for working with Flickr.
+# Author: Po Shan Cheah http://mortonfox.com
+
+
 require 'rubygems'
 require 'flickraw'
 require 'rbconfig'
