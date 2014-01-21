@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+# Script for cleaning Flickr views groups.
+# Author: Po Shan Cheah http://mortonfox.com
+
+
 unless Kernel.respond_to? :require_relative
   # Add require_relative shim for Ruby 1.8 compatibility.
   module Kernel
