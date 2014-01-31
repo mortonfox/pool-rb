@@ -3,7 +3,6 @@
 # Script for cleaning Flickr views groups.
 # Author: Po Shan Cheah http://mortonfox.com
 
-
 unless Kernel.respond_to? :require_relative
   # Add require_relative shim for Ruby 1.8 compatibility.
   module Kernel
@@ -117,7 +116,7 @@ module PoolRB
       }
     end
 
-    def get_page_totals
+    def page_totals
       pagetotals = {}
       totalpages = 0
       GROUPS.each { |gkey, group|
@@ -130,7 +129,7 @@ module PoolRB
 
     # Clean the pages of each group in order from most recent to oldest.
     def clean_first_pages
-      _, pagetotals = get_page_totals
+      _, pagetotals = page_totals
 
       pagenum = 1
       loop {
@@ -148,7 +147,7 @@ module PoolRB
 
     # Clean random pages chosen from all the groups.
     def clean_random_pages
-      totalpages, pagetotals = get_page_totals
+      totalpages, pagetotals = page_totals
 
       loop do
         i = rand totalpages
@@ -168,7 +167,7 @@ end
 do_what = :first
 
 options = OptionParser.new { |opts|
-  opts.banner = "Usage: #{$0} [options]"
+  opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
   opts.on('-r', '--random', 'Clean random pages chosen from all groups.') {
     do_what = :random
   }

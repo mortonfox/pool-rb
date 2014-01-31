@@ -20,14 +20,14 @@ CREATE TABLE IF NOT EXISTS `tokens` (
         `last_updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
       EOM
-      @db.execute(stmt) { }
+      @db.execute(stmt) {}
     end
 
     def add_token service, token, secret
       stmt = <<-EOM
 REPLACE INTO `tokens` (`service`, `token`, `secret`) VALUES (?, ?, ?)
       EOM
-      @db.execute(stmt, service, token, secret) { }
+      @db.execute(stmt, service, token, secret) {}
     end
 
     def get_token service
@@ -42,10 +42,9 @@ SELECT `token`, `secret` FROM `tokens` WHERE `service` = ?
   end
 end
 
-if __FILE__ == $0
+if __FILE__ == $PROGRAM_NAME
   db = PoolRB::Database.new
   db.add_token 'hello', '1', '2'
   token, secret = db.get_token 'hello'
   puts "token = #{token}, secret = #{secret}"
 end
-

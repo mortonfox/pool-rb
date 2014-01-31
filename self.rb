@@ -3,7 +3,6 @@
 # Script for moving my own photos in and out of views groups so that those follow group criteria.
 # Author: Po Shan Cheah http://mortonfox.com
 
-
 unless Kernel.respond_to? :require_relative
   # Add require_relative shim for Ruby 1.8 compatibility.
   module Kernel
@@ -52,10 +51,10 @@ module PoolRB
       { :name => 'Views: 3000', :id => '10386539@N00', :range => 3000..3999 },
       { :name => 'Views: 4000', :id => '69218008@N00', :range => 4000..4999 },
       { :name => 'Views: 5000', :id => '52498228@N00', :range => 5000..9999 },
-      { :name => 'Views: 10000', :id => '28114976@N00', :range => 10000..24999 },
-      { :name => 'Views: 25000', :id => '665334@N25', :range => 25000..999_999 },
+      { :name => 'Views: 10000', :id => '28114976@N00', :range => 10_000..24_999 },
+      { :name => 'Views: 25000', :id => '665334@N25', :range => 25_000..999_999 },
 
-      { :name => ' 100+ Views OR 10+ Favorites', :id => '53758961@N00', :range => 100..99999 },
+      { :name => ' 100+ Views OR 10+ Favorites', :id => '53758961@N00', :range => 100..99_999 },
       { :name => '50 Views - 100', :id => '33128095@N00', :range => 50..99 },
       { :name => '50 to 99 views', :id => '47017726@N00', :range => 50..99 },
       { :name => 'Centurian Club', :id => '38475367@N00', :range => 100..199 },
@@ -74,11 +73,11 @@ module PoolRB
       { :name => '4000 Views', :id => '57817661@N00', :range => 4000..4999 },
       { :name => '5000 Views', :id => '36646466@N00', :range => 5000..7999 },
       { :name => '8000 Views', :id => '84118708@N00', :range => 8000..9999 },
-      { :name => '10000 Views', :id => '48137763@N00', :range => 10000..19999 },
-      { :name => '20000 Views', :id => '76541493@N00', :range => 20000..29999 },
-      { :name => '30000 Views', :id => '20944073@N00', :range => 30000..39999 },
-      { :name => '40000 Views', :id => '10486925@N00', :range => 40000..49999 },
-      { :name => '50000 Views', :id => '47292426@N00', :range => 50000..99999 },
+      { :name => '10000 Views', :id => '48137763@N00', :range => 10_000..19_999 },
+      { :name => '20000 Views', :id => '76541493@N00', :range => 20_000..29_999 },
+      { :name => '30000 Views', :id => '20944073@N00', :range => 30_000..39_999 },
+      { :name => '40000 Views', :id => '10486925@N00', :range => 40_000..49_999 },
+      { :name => '50000 Views', :id => '47292426@N00', :range => 50_000..99_999 },
       { :name => '100000 Views', :id => '83246564@N00', :range => 100_000..999_999 },
 
       { :name => 'Views: 7-25', :id => '54402757@N00', :range => 7..25 },
@@ -104,9 +103,9 @@ module PoolRB
       { :name => 'Views: 4000-5000', :id => '68161359@N00', :range => 4000..4999 },
       { :name => 'Views: 5000-7500', :id => '413251@N22', :range => 5000..7499 },
       { :name => 'Views: 7500-10000', :id => '413255@N22', :range => 7500..9999 },
-      { :name => 'Views: 10000-15000', :id => '390685@N23', :range => 10000..14999 },
-      { :name => 'Views: 15000-20000', :id => '349288@N24', :range => 15000..19999 },
-      { :name => 'Views: 20000+', :id => '349290@N24', :range => 20000..99999 },
+      { :name => 'Views: 10000-15000', :id => '390685@N23', :range => 10_000..14_999 },
+      { :name => 'Views: 15000-20000', :id => '349288@N24', :range => 15_000..19_999 },
+      { :name => 'Views: 20000+', :id => '349290@N24', :range => 20_000..99_999 },
 
       { :name => '10 views (-25)', :id => '33472647@N00', :range => 10..24 },
       { :name => '25 Views (-50)', :id => '43124025@N00', :range => 25..49 },
@@ -125,7 +124,7 @@ module PoolRB
       { :name => '800 View Club', :id => '95039446@N00', :range => 800..899 },
       { :name => '900 View Club', :id => '98113559@N00', :range => 900..999 },
       { :name => '1,000 View Club', :id => '30605672@N00', :range => 1000..1099 },
-      { :name => '1,100 Plus View Club', :id => '62602380@N00', :range => 1100..99999 },
+      { :name => '1,100 Plus View Club', :id => '62602380@N00', :range => 1100..99_999 },
 
       { :name => 'minimum 100 views', :id => '88744574@N00', :range => 100..249 },
       { :name => 'minimum 250 views', :id => '53262654@N00', :range => 250..499 },
@@ -135,7 +134,7 @@ module PoolRB
       { :name => 'minimum 2000 views', :id => '78934823@N00', :range => 2000..2999 },
       { :name => 'minimum 3000 views', :id => '79108944@N00', :range => 3000..3999 },
       { :name => 'minimum 4000 views', :id => '78142473@N00', :range => 4000..4999 },
-      { :name => 'minimum 5000 views', :id => '50849097@N00', :range => 5000..99999 },
+      { :name => 'minimum 5000 views', :id => '50849097@N00', :range => 5000..99_999 },
 
       { :name => 'Views 100', :id => '64501366@N00', :range => 100..199 },
       { :name => 'Views 200', :id => '40663022@N00', :range => 200..299 },
@@ -193,7 +192,7 @@ module PoolRB
       { :name => 'Photos with 700 (- 799) views', :id => '11514012@N00', :range => 700..799 },
       { :name => 'Photos with 800 (- 899) views', :id => '29157411@N00', :range => 800..899 },
       { :name => 'Photos with 900 (- 999) views', :id => '27112996@N00', :range => 900..999 },
-      { :name => 'Photos with 1000 views (and more)', :id => '42827898@N00', :range => 1000..99999 },
+      { :name => 'Photos with 1000 views (and more)', :id => '42827898@N00', :range => 1000..99_999 },
 
       { :name => '100 Views Unlimited', :id => '2278698@N23', :range => 100..199 },
       { :name => '200 Views Unlimited', :id => '2388359@N23', :range => 200..299 },
@@ -295,9 +294,7 @@ module PoolRB
         @log.puts "#{err.code}: #{err.msg}"
         # Error code 5 is 'photo limit reached'. Make a note of that, so we
         # don't try to add any more photos to this group.
-        if err.code == 5
-          group[:hitlimit] = true
-        end
+        group[:hitlimit] = true if err.code == 5
       end
     end
 

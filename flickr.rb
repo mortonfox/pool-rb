@@ -1,7 +1,6 @@
 # Utility functions for working with Flickr.
 # Author: Po Shan Cheah http://mortonfox.com
 
-
 require 'rubygems'
 require 'flickraw'
 require 'rbconfig'
@@ -32,10 +31,10 @@ module PoolRB
       FlickRaw.shared_secret = API_SECRET
     end
 
-    def is_mac?
+    def mac?
       RbConfig::CONFIG['host_os'] =~ /darwin/i
     end
-    private :is_mac?
+    private :mac?
 
     def sync_stdout
       save_sync = $stdout.sync
@@ -48,7 +47,7 @@ module PoolRB
 
     def go_url url
       result = nil
-      result = system "open '#{url}'" if is_mac?
+      result = system "open '#{url}'" if mac?
       unless result
         puts 'Open this URL in your browser to complete the authentication process:'
         puts url
@@ -71,7 +70,7 @@ module PoolRB
 
         return [ flickr.access_token, flickr.access_secret ]
       rescue EOFError, FlickRaw::FailedResponse, Timeout::Error, Errno::ENOENT, Errno::ETIMEDOUT, Errno::ECONNRESET => err
-        fail "Flickr API authentication failed: #{err}"
+        raise "Flickr API authentication failed: #{err}"
       end
     end
 
@@ -107,12 +106,10 @@ module PoolRB
           sleep RETRY_WAIT
           retry
         end
-        raise
+        fail
       end
     end
   end
 end
 
-if __FILE__ == $0
-  PoolRB::Flickr.new.do_auth
-end
+PoolRB::Flickr.new.do_auth if __FILE__ == $PROGRAM_NAME
