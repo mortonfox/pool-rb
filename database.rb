@@ -3,12 +3,10 @@ require 'sqlite3'
 
 # Pool module.
 module PoolRB
-
   DB_FNAME = 'poolrb.db'
 
-  # Functions for working with SQLite3 database.
+  # Functions for storing Flickr access keys in a SQLite3 database.
   class Database
-
     def initialize
       @db = SQLite3::Database.new DB_FNAME
 
@@ -37,7 +35,7 @@ SELECT `token`, `secret` FROM `tokens` WHERE `service` = ?
       @db.execute(stmt, service) { |row|
         return row
       }
-      [ nil, nil ]
+      [nil, nil]
     end
   end
 end

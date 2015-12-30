@@ -1,11 +1,9 @@
 module PoolRB
-
   # Functions for writing messages to a HTML log file.
   class Log
-
     def initialize prefix, path = nil, title = nil
       path ||= './logs'
-      fname = File.join path, "#{prefix}#{sprintf '%08X', Time.now.to_i}.htm"
+      fname = File.join path, "#{prefix}#{format '%08X', Time.now.to_i}.htm"
       @file = File.open fname, 'w'
       @file.sync = true
 
