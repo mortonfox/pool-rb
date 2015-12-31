@@ -16,10 +16,8 @@ Range.class_eval do
 end
 
 module PoolRB
-
   # Functions for working with Flickr API.
   class Flickr
-
     API_KEY = 'db6b5b84eaba843fa20b0ce120d200c0'
     API_SECRET = 'dbfb3978910bfc79'
 
@@ -57,7 +55,7 @@ module PoolRB
 
     def do_auth
       token = flickr.get_request_token
-      auth_url = flickr.get_authorize_url token['oauth_token'], :perms => 'write'
+      auth_url = flickr.get_authorize_url token['oauth_token'], perms: 'write'
 
       go_url auth_url
       sync_stdout { print 'Enter authorization code: ' }
@@ -68,7 +66,7 @@ module PoolRB
         login = flickr.test.login
         puts "Authenticated as #{login.username} with token #{flickr.access_token} and secret #{flickr.access_secret}" if $DEBUG
 
-        return [ flickr.access_token, flickr.access_secret ]
+        return [flickr.access_token, flickr.access_secret]
       rescue EOFError, FlickRaw::FailedResponse, Timeout::Error, Errno::ENOENT, Errno::ETIMEDOUT, Errno::ECONNRESET => err
         raise "Flickr API authentication failed: #{err}"
       end
@@ -106,7 +104,7 @@ module PoolRB
           sleep RETRY_WAIT
           retry
         end
-        fail
+        raise
       end
     end
   end
