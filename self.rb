@@ -17,10 +17,8 @@ require_relative 'database'
 require_relative 'log'
 
 module PoolRB
-
   # Move own photos in or out of views groups.
   class SelfPool
-
     SERVICE_NAME = 'self'
 
     GROUPS = [
@@ -59,7 +57,7 @@ module PoolRB
       { name: '50 to 99 views', id: '47017726@N00', range: 50..99 },
       { name: 'Centurian Club', id: '38475367@N00', range: 100..199 },
       { name: '200 Views', id: '12476408@N00', range: 200..299 },
-#      { name: '200 Views (freeminded)', id: '23348528@N00', range: 200..299 },
+      #      { name: '200 Views (freeminded)', id: '23348528@N00', range: 200..299 },
       { name: '100 Views', id: '49688781@N00', range: 100..199 },
       { name: '100 Views - 200', id: '49864370@N00', range: 100..199 },
       { name: '300 Views - 499', id: '94294471@N00', range: 300..499 },
@@ -280,7 +278,7 @@ module PoolRB
       @log.puts "#{views} views"
 
       results = Flickr.flickr_retry {
-        flickr.photos.getAllContexts :photo_id => photo.id
+        flickr.photos.getAllContexts photo_id: photo.id
       }
 
       # Get a list of IDs of pools to which this photo belongs.
@@ -303,7 +301,7 @@ module PoolRB
 
     def get_photos pagenum, pagelen
       Flickr.flickr_retry {
-        flickr.people.getPhotos :user_id => 'me', :per_page => pagelen, :page => pagenum, :extras => 'views'
+        flickr.people.getPhotos user_id: 'me', per_page: pagelen, page: pagenum, extras: 'views'
       }
     end
 
@@ -315,7 +313,7 @@ module PoolRB
 
       begin
         Flickr.flickr_retry {
-          flickr.groups.pools.add :photo_id => photo.id, :group_id => group[:id]
+          flickr.groups.pools.add photo_id: photo.id, group_id: group[:id]
         }
       rescue FlickRaw::FailedResponse => err
         warn "#{err.code}: #{err.msg}"
@@ -332,7 +330,7 @@ module PoolRB
 
       begin
         Flickr.flickr_retry {
-          flickr.groups.pools.remove :photo_id => photo.id, :group_id => group[:id]
+          flickr.groups.pools.remove photo_id: photo.id, group_id: group[:id]
         }
       rescue FlickRaw::FailedResponse => err
         warn "#{err.code}: #{err.msg}"
