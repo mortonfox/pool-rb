@@ -20,7 +20,7 @@ require 'optparse'
 module PoolRB
   # Clean Flickr views groups that we manage.
   class CleanPool
-    SERVICE_NAME = 'pool'
+    SERVICE_NAME = 'pool'.freeze
 
     PAGELEN = 100
 
@@ -30,7 +30,7 @@ module PoolRB
       75 => { name: '50-75 Views', id: '38541060@N00', range: 50..75 },
       100 => { name: '75-100 Views', id: '45499242@N00', range: 75..100 },
       200 => { name: '150-200 Views', id: '57008537@N00', range: 150..200 },
-    }
+    }.freeze
 
     def initialize testmode = false
       @db = Database.new

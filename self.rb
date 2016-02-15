@@ -19,7 +19,7 @@ require_relative 'log'
 module PoolRB
   # Move own photos in or out of views groups.
   class SelfPool
-    SERVICE_NAME = 'self'
+    SERVICE_NAME = 'self'.freeze
 
     GROUPS = [
       { name: '1-25 Views', id: '66969363@N00', range: 1..24 },
@@ -252,7 +252,7 @@ module PoolRB
       { name: 'views 7777', id: '84654090@N00', range: 7777..8887 },
       { name: 'views 8888', id: '61849515@N00', range: 8888..9998 },
       { name: 'views 9999', id: '74134505@N00', range: 9999..999_999 },
-    ]
+    ].freeze
 
     def initialize
       @db = Database.new
@@ -290,10 +290,10 @@ module PoolRB
       }
 
       GROUPS.each { |group|
-        if pools[group[:id]] and !group[:range].cover?(views)
+        if pools[group[:id]] && !group[:range].cover?(views)
           remove_photo_from_group photo, group
         end
-        if !pools[group[:id]] and group[:range].cover?(views)
+        if !pools[group[:id]] && group[:range].cover?(views)
           add_photo_to_group photo, group
         end
       }

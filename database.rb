@@ -3,7 +3,7 @@ require 'sqlite3'
 
 # Pool module.
 module PoolRB
-  DB_FNAME = 'poolrb.db'
+  DB_FNAME = 'poolrb.db'.freeze
 
   # Functions for storing Flickr access keys in a SQLite3 database.
   class Database

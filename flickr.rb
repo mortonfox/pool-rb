@@ -18,8 +18,8 @@ end
 module PoolRB
   # Functions for working with Flickr API.
   class Flickr
-    API_KEY = 'db6b5b84eaba843fa20b0ce120d200c0'
-    API_SECRET = 'dbfb3978910bfc79'
+    API_KEY = 'db6b5b84eaba843fa20b0ce120d200c0'.freeze
+    API_SECRET = 'dbfb3978910bfc79'.freeze
 
     MAX_RETRY = 5
     RETRY_WAIT = 0.5
@@ -85,7 +85,7 @@ module PoolRB
       6 => true, # added to pending queue
       7 => true, # already in pending queue
       10 => true, # maximum photos in pool
-    }
+    }.freeze
 
     def self.flickr_retry
       retry_count = 0
@@ -93,7 +93,7 @@ module PoolRB
         yield
       rescue FlickRaw::FailedResponse => err
         retry_count += 1
-        if !PASSTHRU_ERRORS[err.code] and retry_count <= MAX_RETRY
+        if !PASSTHRU_ERRORS[err.code] && retry_count <= MAX_RETRY
           sleep RETRY_WAIT
           retry
         end
