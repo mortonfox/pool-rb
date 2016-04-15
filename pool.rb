@@ -60,6 +60,7 @@ module PoolRB
         @log.puts 'Test mode. Photos will not be removed.'
       end
 
+      reject_count = 0
       i = 0
       photos.each { |photo|
         views = photo.views.to_i
@@ -76,12 +77,14 @@ module PoolRB
           Flickr.flickr_retry {
             flickr.groups.pools.remove group_id: groupid, photo_id: photo.id
           }
+          reject_count += 1
           sleep 0.5
         rescue FlickRaw::FailedResponse => err
           warn "Failed to remove photo #{photo.id}: #{err.code} #{err.msg}"
           @log.puts "Failed to remove photo #{photo.id}: #{err.code} #{err.msg}"
         end
       }
+      reject_count
     end
 
     def general_retry
@@ -97,7 +100,7 @@ module PoolRB
           retry
         end
 
-        $stderr.puts "Error: #{err}"
+        warn "Error: #{err}"
         @log.puts "Error: #{err}"
       end
     end
@@ -133,10 +136,18 @@ module PoolRB
       loop {
         didwork = false
         GROUPS.each { |gkey, group|
-          if pagenum <= pagetotals[gkey]
-            process_page pagenum, group
-            didwork = true
-          end
+          next if pagenum > pagetotals[gkey]
+
+          loop_number = 1
+          loop {
+            reject_count = process_page pagenum, group
+            break if reject_count == 0
+
+            loop_number += 1
+            puts "Round #{loop_number}..."
+            @log.puts "Round #{loop_number}..."
+          }
+          didwork = true
         }
         break unless didwork
         pagenum += 1
