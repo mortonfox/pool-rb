@@ -3,15 +3,6 @@
 # Script for moving my own photos in and out of views groups so that those follow group criteria.
 # Author: Po Shan Cheah http://mortonfox.com
 
-unless Kernel.respond_to? :require_relative
-  # Add require_relative shim for Ruby 1.8 compatibility.
-  module Kernel
-    def require_relative modname
-      require File.join(File.dirname(__FILE__), modname)
-    end
-  end
-end
-
 require_relative 'flickr'
 require_relative 'database'
 require_relative 'log'
@@ -364,8 +355,8 @@ module PoolRB
 
         rescue => err
 
-          $stderr.puts "random_probe error: #{err}"
-          $stderr.puts err.backtrace
+          warn "random_probe error: #{err}"
+          warn err.backtrace
           @log.puts "random_probe error: #{err}"
           @log.puts err.backtrace
 
