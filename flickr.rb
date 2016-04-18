@@ -5,16 +5,6 @@ require 'rubygems'
 require 'flickraw'
 require 'rbconfig'
 
-# Add a cover? method to Range in Ruby 1.8.
-# From: https://makandracards.com/makandra/1056-check-that-a-range-covers-an-element-in-both-ruby-1-9-and-1-8-7
-Range.class_eval do
-  unless method_defined?(:cover?)
-    def cover?(elem)
-      include?(elem)
-    end
-  end
-end
-
 module PoolRB
   # Functions for working with Flickr API.
   class Flickr
