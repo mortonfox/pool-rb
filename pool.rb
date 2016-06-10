@@ -104,7 +104,9 @@ module PoolRB
         puts "=== Group #{group[:name]}: page #{pagenum} of #{pages} ==="
         @log.puts "<h2>Group #{group[:name]}: page #{pagenum} of #{pages}</h2>"
 
-        reject_photos group[:id], result, group[:range]
+        reject_count = reject_photos group[:id], result, group[:range]
+
+        [reject_count, pages]
       }
     end
 
@@ -126,21 +128,36 @@ module PoolRB
       pagenum = 1
       loop {
         didwork = false
+
+        # For each page number, process all the groups.
         GROUPS.each { |gkey, group|
           next if pagenum > pagetotals[gkey]
 
           loop_number = 1
+
+          # Loop until this page is clean. The reason for needing this loop is
+          # removing photos from a page brings in more photos, which will need
+          # to be checked too, from the next page.
           loop {
-            reject_count = process_page pagenum, group
+            reject_count, pages = process_page pagenum, group
             break if reject_count == 0
+
+            # Number of pages in this group may have gone down after photo
+            # removal.
+            pagetotals[gkey] = pages
 
             loop_number += 1
             puts "Round #{loop_number}..."
             @log.puts "Round #{loop_number}..."
           }
+
           didwork = true
         }
+
+        # If no page was checked, then the page number is already beyond all
+        # the groups so we can stop.
         break unless didwork
+
         pagenum += 1
       }
     end
