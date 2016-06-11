@@ -112,18 +112,16 @@ module PoolRB
 
     def page_totals
       pagetotals = {}
-      totalpages = 0
       GROUPS.each { |gkey, group|
         result = get_photos group[:id], 1
         pagetotals[gkey] = result.pages
-        totalpages += result.pages
       }
-      [totalpages, pagetotals]
+      pagetotals
     end
 
     # Clean the pages of each group in order from most recent to oldest.
     def clean_first_pages
-      _, pagetotals = page_totals
+      pagetotals = page_totals
 
       pagenum = 1
       loop {
@@ -164,14 +162,24 @@ module PoolRB
 
     # Clean random pages chosen from all the groups.
     def clean_random_pages
-      totalpages, pagetotals = page_totals
+      pagetotals = page_totals
+      totalpages = pagetotals.values.reduce(:+)
 
       loop do
+        puts "Total pages = #{totalpages}"
+
+        # Pick a random page from all the pages.
         i = rand totalpages
 
         pagetotals.each { |gkey, pages|
+          # Find the group that the chosen page is in.
           if i < pages
-            process_page i + 1, GROUPS[gkey]
+            _, pages = process_page i + 1, GROUPS[gkey]
+
+            # Number of pages in this group may have gone down after photo
+            # removal.
+            pagetotals[gkey] = pages
+            totalpages = pagetotals.values.reduce(:+)
             break
           end
           i -= pages
