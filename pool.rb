@@ -96,6 +96,8 @@ module PoolRB
       end
     end
 
+    # Cleans up one page of a Flickr group.
+    # Returns an array: [the number of photos rejected, the group page count]
     def process_page pagenum, group
       general_retry {
         result = get_photos group[:id], pagenum
