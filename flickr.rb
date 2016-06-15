@@ -4,6 +4,7 @@
 require 'rubygems'
 require 'flickraw'
 require 'rbconfig'
+require 'set'
 
 module PoolRB
   # Functions for working with Flickr API.
@@ -68,14 +69,16 @@ module PoolRB
     end
 
     # Don't retry the following errors.
-    PASSTHRU_ERRORS = {
-      3 => true, # already in pool if adding photo / insufficient permission to remove photo
-      4 => true, # maximum number of pools
-      5 => true, # photo limit reached
-      6 => true, # added to pending queue
-      7 => true, # already in pending queue
-      10 => true, # maximum photos in pool
-    }.freeze
+    PASSTHRU_ERRORS = Set.new(
+      [
+        3, # already in pool if adding photo / insufficient permission to remove photo
+        4, # maximum number of pools
+        5, # photo limit reached
+        6, # added to pending queue
+        7, # already in pending queue
+        10, # maximum photos in pool
+      ]
+    ).freeze
 
     def self.flickr_retry
       retry_count = 0
@@ -83,7 +86,7 @@ module PoolRB
         yield
       rescue FlickRaw::FailedResponse => err
         retry_count += 1
-        if !PASSTHRU_ERRORS[err.code] && retry_count <= MAX_RETRY
+        if !PASSTHRU_ERRORS.include?(err.code) && retry_count <= MAX_RETRY
           sleep RETRY_WAIT
           retry
         end

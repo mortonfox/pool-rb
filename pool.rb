@@ -45,6 +45,7 @@ module PoolRB
     end
 
     # Remove photos that don't belong to the group.
+    # Returns the number of photos rejected.
     def reject_photos groupid, photos, range
       if @testmode
         puts 'Test mode. Photos will not be removed.'
