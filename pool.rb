@@ -191,32 +191,42 @@ module PoolRB
   end
 end
 
-do_what = :first
+def parse_cmdline
+  do_what = :first
 
-options = OptionParser.new { |opts|
-  opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
-  opts.on('-r', '--random', 'Clean random pages chosen from all groups.') {
-    do_what = :random
-  }
-  opts.on('-f', '--first', 'Clean pages from newest to oldest of every group.') {
-    do_what = :first
-  }
-  opts.on_tail('-h', '-?', '--help', 'Show this message') {
-    puts opts
-    exit
-  }
-}
+  options = OptionParser.new { |opts|
+    opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
 
-begin
-  options.parse! ARGV
-rescue => err
-  warn "Error parsing command line: #{err}"
-  warn options
-  exit 1
+    opts.on('-r', '--random', 'Clean random pages chosen from all groups.') {
+      do_what = :random
+    }
+
+    opts.on('-f', '--first', 'Clean pages from newest to oldest of every group. (default)') {
+      do_what = :first
+    }
+
+    opts.on('-h', '-?', '--help', 'Show this message') {
+      puts opts
+      exit
+    }
+  }
+
+  begin
+    options.parse! ARGV
+  rescue => err
+    warn "Error parsing command line: #{err}"
+    warn options
+    exit 1
+  end
+
+  do_what
 end
 
+do_what = parse_cmdline
+
+pool = PoolRB::CleanPool.new
+
 begin
-  pool = PoolRB::CleanPool.new
   if do_what == :first
     pool.clean_first_pages
   else
