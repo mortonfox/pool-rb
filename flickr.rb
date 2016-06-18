@@ -90,7 +90,7 @@ module PoolRB
           retry
         end
         raise
-      rescue EOFError, Timeout::Error, Errno::ENOENT, Errno::ETIMEDOUT, Errno::ECONNRESET => err
+      rescue EOFError, Timeout::Error, Errno::ENOENT, Errno::ETIMEDOUT, Errno::ECONNRESET
         retry_count += 1
         if retry_count <= MAX_RETRY
           sleep RETRY_WAIT
