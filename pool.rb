@@ -236,4 +236,4 @@ rescue Interrupt
   warn 'Interrupted! Exiting...'
 end
 
-# -- END --
+__END__

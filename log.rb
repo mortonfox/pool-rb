@@ -33,3 +33,5 @@ module PoolRB
     end
   end
 end
+
+__END__

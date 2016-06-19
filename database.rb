@@ -45,3 +45,5 @@ if __FILE__ == $PROGRAM_NAME
   token, secret = db.get_token 'hello'
   puts "token = #{token}, secret = #{secret}"
 end
+
+__END__

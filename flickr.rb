@@ -103,3 +103,5 @@ module PoolRB
 end
 
 PoolRB::Flickr.new.do_auth if __FILE__ == $PROGRAM_NAME
+
+__END__
