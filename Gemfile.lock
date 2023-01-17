@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    flickraw (0.9.10)
+    sqlite3 (1.6.0-x86_64-linux)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  flickraw
+  sqlite3
+
+BUNDLED WITH
+   2.4.3
