@@ -4,6 +4,7 @@
 # Author: Po Shan Cheah http://mortonfox.com
 
 require 'flickraw'
+require 'launchy'
 require 'rbconfig'
 
 module PoolRB
@@ -20,11 +21,6 @@ module PoolRB
       FlickRaw.shared_secret = API_SECRET
     end
 
-    def mac?
-      RbConfig::CONFIG['host_os'] =~ /darwin/i
-    end
-    private :mac?
-
     def sync_stdout
       save_sync = $stdout.sync
       $stdout.sync = true
@@ -34,21 +30,11 @@ module PoolRB
     end
     private :sync_stdout
 
-    def go_url(url)
-      result = nil
-      result = system "open '#{url}'" if mac?
-      unless result
-        puts 'Open this URL in your browser to complete the authentication process:'
-        puts url
-      end
-    end
-    private :go_url
-
     def do_auth
       token = flickr.get_request_token
       auth_url = flickr.get_authorize_url token['oauth_token'], perms: 'write'
 
-      go_url auth_url
+      Launchy.open(auth_url)
       sync_stdout { print 'Enter authorization code: ' }
       verify = gets.strip
 

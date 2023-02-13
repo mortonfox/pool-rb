@@ -1,7 +1,12 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.8.1)
+      public_suffix (>= 2.0.2, < 6.0)
     flickraw (0.9.10)
+    launchy (2.5.2)
+      addressable (~> 2.8)
+    public_suffix (5.0.1)
     sqlite3 (1.6.0-x86_64-linux)
 
 PLATFORMS
@@ -9,6 +14,7 @@ PLATFORMS
 
 DEPENDENCIES
   flickraw
+  launchy
   sqlite3
 
 BUNDLED WITH

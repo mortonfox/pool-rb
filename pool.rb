@@ -117,10 +117,10 @@ module PoolRB
 
     # Returns a hash of { group key => number of pages in group }
     def page_totals
-      Hash[GROUPS.map { |gkey, group|
+      GROUPS.to_h { |gkey, group|
         result = get_photos group[:id], 1
         [gkey, result.pages]
-      }]
+      }
     end
 
     # Clean the pages of each group in order from most recent to oldest.
