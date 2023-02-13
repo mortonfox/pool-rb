@@ -25,7 +25,7 @@ module PoolRB
       200 => { name: '150-200 Views', id: '57008537@N00', range: 150..200 }
     }.freeze
 
-    def initialize(testmode = false)
+    def initialize(testmode: false)
       @db = Database.new
       @flickr = Flickr.new
       @log = Log.new 'pl'
