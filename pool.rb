@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# frozen_string_literal: true
+
 # Script for cleaning Flickr views groups.
 # Author: Po Shan Cheah http://mortonfox.com
 
@@ -11,7 +13,7 @@ require 'optparse'
 module PoolRB
   # Clean Flickr views groups that we manage.
   class CleanPool
-    SERVICE_NAME = 'pool'.freeze
+    SERVICE_NAME = 'pool'
 
     PAGELEN = 100
 
@@ -20,10 +22,10 @@ module PoolRB
       50 => { name: '25-50 Views', id: '55265535@N00', range: 25..50 },
       75 => { name: '50-75 Views', id: '38541060@N00', range: 50..75 },
       100 => { name: '75-100 Views', id: '45499242@N00', range: 75..100 },
-      200 => { name: '150-200 Views', id: '57008537@N00', range: 150..200 },
+      200 => { name: '150-200 Views', id: '57008537@N00', range: 150..200 }
     }.freeze
 
-    def initialize testmode = false
+    def initialize(testmode = false)
       @db = Database.new
       @flickr = Flickr.new
       @log = Log.new 'pl'
@@ -38,7 +40,7 @@ module PoolRB
       end
     end
 
-    def get_photos groupid, pagenum
+    def get_photos(groupid, pagenum)
       Flickr.flickr_retry {
         flickr.groups.pools.getPhotos group_id: groupid, per_page: PAGELEN, page: pagenum, extras: 'views'
       }
@@ -46,7 +48,7 @@ module PoolRB
 
     # Remove photos that don't belong to the group.
     # Returns the number of photos rejected.
-    def reject_photos groupid, photos, range
+    def reject_photos(groupid, photos, range)
       if @testmode
         puts 'Test mode. Photos will not be removed.'
         @log.puts 'Test mode. Photos will not be removed.'
@@ -71,9 +73,9 @@ module PoolRB
           }
           reject_count += 1
           sleep 0.5
-        rescue FlickRaw::FailedResponse => err
-          warn "Failed to remove photo #{photo.id}: #{err.code} #{err.msg}"
-          @log.puts "Failed to remove photo #{photo.id}: #{err.code} #{err.msg}"
+        rescue FlickRaw::FailedResponse => e
+          warn "Failed to remove photo #{photo.id}: #{e.code} #{e.msg}"
+          @log.puts "Failed to remove photo #{photo.id}: #{e.code} #{e.msg}"
         end
       }
       reject_count
@@ -83,23 +85,23 @@ module PoolRB
       retry_count = 0
       begin
         yield
-      rescue => err
+      rescue StandardError => e
         if retry_count < 3
           retry_count += 1
-          puts "Error: #{err}. Retrying..."
-          @log.puts "Error: #{err}. Retrying..."
+          puts "Error: #{e}. Retrying..."
+          @log.puts "Error: #{e}. Retrying..."
           sleep 1
           retry
         end
 
-        warn "Error: #{err}"
-        @log.puts "Error: #{err}"
+        warn "Error: #{e}"
+        @log.puts "Error: #{e}"
       end
     end
 
     # Cleans up one page of a Flickr group.
     # Returns an array: [the number of photos rejected, the group page count]
-    def process_page pagenum, group
+    def process_page(pagenum, group)
       general_retry {
         result = get_photos group[:id], pagenum
         pages = result.pages
@@ -140,7 +142,7 @@ module PoolRB
           # to be checked too, from the next page.
           loop {
             reject_count, pages = process_page pagenum, group
-            break if reject_count == 0
+            break if reject_count.zero?
 
             # Number of pages in this group may have gone down after photo
             # removal.
@@ -213,8 +215,8 @@ def parse_cmdline
 
   begin
     options.parse! ARGV
-  rescue => err
-    warn "Error parsing command line: #{err}"
+  rescue StandardError => e
+    warn "Error parsing command line: #{e}"
     warn options
     exit 1
   end

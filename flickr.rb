@@ -1,15 +1,16 @@
+# frozen_string_literal: true
+
 # Utility functions for working with Flickr.
 # Author: Po Shan Cheah http://mortonfox.com
 
 require 'flickraw'
 require 'rbconfig'
-require 'set'
 
 module PoolRB
   # Functions for working with Flickr API.
   class Flickr
-    API_KEY = 'db6b5b84eaba843fa20b0ce120d200c0'.freeze
-    API_SECRET = 'dbfb3978910bfc79'.freeze
+    API_KEY = 'db6b5b84eaba843fa20b0ce120d200c0'
+    API_SECRET = 'dbfb3978910bfc79'
 
     MAX_RETRY = 5
     RETRY_WAIT = 0.5
@@ -33,7 +34,7 @@ module PoolRB
     end
     private :sync_stdout
 
-    def go_url url
+    def go_url(url)
       result = nil
       result = system "open '#{url}'" if mac?
       unless result
@@ -56,13 +57,13 @@ module PoolRB
         login = flickr.test.login
         puts "Authenticated as #{login.username} with token #{flickr.access_token} and secret #{flickr.access_secret}" if $DEBUG
 
-        return [flickr.access_token, flickr.access_secret]
-      rescue EOFError, FlickRaw::FailedResponse, Timeout::Error, Errno::ENOENT, Errno::ETIMEDOUT, Errno::ECONNRESET => err
-        raise "Flickr API authentication failed: #{err}"
+        [flickr.access_token, flickr.access_secret]
+      rescue EOFError, FlickRaw::FailedResponse, Timeout::Error, Errno::ENOENT, Errno::ETIMEDOUT, Errno::ECONNRESET => e
+        raise "Flickr API authentication failed: #{e}"
       end
     end
 
-    def set_auth token, secret
+    def set_auth(token, secret)
       flickr.access_token = token
       flickr.access_secret = secret
     end
@@ -75,7 +76,7 @@ module PoolRB
         5, # photo limit reached
         6, # added to pending queue
         7, # already in pending queue
-        10, # maximum photos in pool
+        10 # maximum photos in pool
       ]
     ).freeze
 
@@ -83,9 +84,9 @@ module PoolRB
       retry_count = 0
       begin
         yield
-      rescue FlickRaw::FailedResponse => err
+      rescue FlickRaw::FailedResponse => e
         retry_count += 1
-        if !PASSTHRU_ERRORS.include?(err.code) && retry_count <= MAX_RETRY
+        if !PASSTHRU_ERRORS.include?(e.code) && retry_count <= MAX_RETRY
           sleep RETRY_WAIT
           retry
         end

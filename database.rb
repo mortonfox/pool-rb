@@ -1,36 +1,38 @@
+# frozen_string_literal: true
+
 require 'sqlite3'
 
 # Pool module.
 module PoolRB
-  DB_FNAME = 'poolrb.db'.freeze
+  DB_FNAME = 'poolrb.db'
 
   # Functions for storing Flickr access keys in a SQLite3 database.
   class Database
     def initialize
       @db = SQLite3::Database.new DB_FNAME
 
-      stmt = <<-EOM
-CREATE TABLE IF NOT EXISTS `tokens` (
-        `service` VARCHAR(100) PRIMARY KEY,
-        `token` VARCHAR(100),
-        `secret` VARCHAR(100),
-        `last_updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
-      EOM
-      @db.execute(stmt) {}
+      stmt = <<~SQLSTMT
+        CREATE TABLE IF NOT EXISTS `tokens` (
+          `service` VARCHAR(100) PRIMARY KEY,
+          `token` VARCHAR(100),
+          `secret` VARCHAR(100),
+          `last_updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      SQLSTMT
+      @db.execute(stmt)
     end
 
-    def add_token service, token, secret
-      stmt = <<-EOM
-REPLACE INTO `tokens` (`service`, `token`, `secret`) VALUES (?, ?, ?)
-      EOM
-      @db.execute(stmt, service, token, secret) {}
+    def add_token(service, token, secret)
+      stmt = <<~SQLSTMT
+        REPLACE INTO `tokens` (`service`, `token`, `secret`) VALUES (?, ?, ?)
+      SQLSTMT
+      @db.execute(stmt, service, token, secret)
     end
 
-    def get_token service
-      stmt = <<-EOM
-SELECT `token`, `secret` FROM `tokens` WHERE `service` = ?
-      EOM
+    def get_token(service)
+      stmt = <<~SQLSTMT
+        SELECT `token`, `secret` FROM `tokens` WHERE `service` = ?
+      SQLSTMT
       @db.execute(stmt, service) { |row|
         return row
       }

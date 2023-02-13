@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# frozen_string_literal: true
+
 # Script for moving my own photos in and out of views groups so that those follow group criteria.
 # Author: Po Shan Cheah http://mortonfox.com
 
@@ -10,7 +12,7 @@ require_relative 'log'
 module PoolRB
   # Move own photos in or out of views groups.
   class SelfPool
-    SERVICE_NAME = 'self'.freeze
+    SERVICE_NAME = 'self'
 
     GROUPS = [
       { name: '1-25 Views', id: '66969363@N00', range: 1..24 },
@@ -242,7 +244,7 @@ module PoolRB
       { name: 'views 6666', id: '16779320@N00', range: 6666..7776 },
       { name: 'views 7777', id: '84654090@N00', range: 7777..8887 },
       { name: 'views 8888', id: '61849515@N00', range: 8888..9998 },
-      { name: 'views 9999', id: '74134505@N00', range: 9999..999_999 },
+      { name: 'views 9999', id: '74134505@N00', range: 9999..999_999 }
     ].freeze
 
     def initialize
@@ -259,7 +261,7 @@ module PoolRB
       end
     end
 
-    def check_photo count, photo
+    def check_photo(count, photo)
       puts "#{count}. Checking photo #{photo.id} \"#{photo.title}\"..."
       @log.puts "#{count}. Checking photo <a href=\"http://www.flickr.com/#{photo.owner}/#{photo.id}\">#{photo.id} \"#{photo.title}\"</a>..."
 
@@ -281,22 +283,18 @@ module PoolRB
       }
 
       GROUPS.each { |group|
-        if pools[group[:id]] && !group[:range].cover?(views)
-          remove_photo_from_group photo, group
-        end
-        if !pools[group[:id]] && group[:range].cover?(views)
-          add_photo_to_group photo, group
-        end
+        remove_photo_from_group photo, group if pools[group[:id]] && !group[:range].cover?(views)
+        add_photo_to_group photo, group if !pools[group[:id]] && group[:range].cover?(views)
       }
     end
 
-    def get_photos pagenum, pagelen
+    def get_photos(pagenum, pagelen)
       Flickr.flickr_retry {
         flickr.people.getPhotos user_id: 'me', per_page: pagelen, page: pagenum, extras: 'views'
       }
     end
 
-    def add_photo_to_group photo, group
+    def add_photo_to_group(photo, group)
       return if group[:hitlimit]
 
       puts "Adding photo #{photo.id} to group #{group[:name]}..."
@@ -306,16 +304,16 @@ module PoolRB
         Flickr.flickr_retry {
           flickr.groups.pools.add photo_id: photo.id, group_id: group[:id]
         }
-      rescue FlickRaw::FailedResponse => err
-        warn "#{err.code}: #{err.msg}"
-        @log.puts "#{err.code}: #{err.msg}"
+      rescue FlickRaw::FailedResponse => e
+        warn "#{e.code}: #{e.msg}"
+        @log.puts "#{e.code}: #{e.msg}"
         # Error code 5 is 'photo limit reached'. Make a note of that, so we
         # don't try to add any more photos to this group.
-        group[:hitlimit] = true if err.code == 5
+        group[:hitlimit] = true if e.code == 5
       end
     end
 
-    def remove_photo_from_group photo, group
+    def remove_photo_from_group(photo, group)
       puts "Removing photo #{photo.id} from group #{group[:name]}..."
       @log.puts "Removing photo #{photo.id} from group #{group[:name]}..."
 
@@ -323,9 +321,9 @@ module PoolRB
         Flickr.flickr_retry {
           flickr.groups.pools.remove photo_id: photo.id, group_id: group[:id]
         }
-      rescue FlickRaw::FailedResponse => err
-        warn "#{err.code}: #{err.msg}"
-        @log.puts "#{err.code}: #{err.msg}"
+      rescue FlickRaw::FailedResponse => e
+        warn "#{e.code}: #{e.msg}"
+        @log.puts "#{e.code}: #{e.msg}"
       end
     end
 
@@ -341,7 +339,6 @@ module PoolRB
         picnum = 1 + rand(totalpics)
 
         begin
-
           result = (get_photos picnum, 1).first
           id = result.id
           if checked[id]
@@ -352,14 +349,11 @@ module PoolRB
             check_photo count, result
             checked[id] = true
           end
-
-        rescue => err
-
-          warn "random_probe error: #{err}"
-          warn err.backtrace
-          @log.puts "random_probe error: #{err}"
-          @log.puts err.backtrace
-
+        rescue StandardError => e
+          warn "random_probe error: #{e}"
+          warn e.backtrace
+          @log.puts "random_probe error: #{e}"
+          @log.puts e.backtrace
         end
 
         sleep 1
