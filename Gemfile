@@ -2,6 +2,8 @@
 
 source 'https://rubygems.org'
 
+ruby '>= 3.4.0'
+
 gem 'flickraw'
 gem 'launchy'
 gem 'sqlite3'
