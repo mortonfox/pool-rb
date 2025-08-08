@@ -12,10 +12,10 @@ module PoolRB
       @file.puts <<~HTML
         <html>
         <head>
-        #{title ? "<title>#{title}</title>" : ''}
+        #{"<title>#{title}</title>" if title}
         </head>
         <body>
-        #{title ? "<h1>#{title}</h1>" : ''}
+        #{"<h1>#{title}</h1>" if title}
         <p>
       HTML
 
