@@ -11,7 +11,7 @@ GEM
       childprocess (~> 5.0)
       logger (~> 1.6)
     logger (1.7.0)
-    public_suffix (7.0.0)
+    public_suffix (7.0.2)
     sqlite3 (2.9.0-x86_64-linux-gnu)
 
 PLATFORMS
@@ -26,4 +26,4 @@ RUBY VERSION
   ruby 3.4.2p28
 
 BUNDLED WITH
-  4.0.1
+  4.0.6
