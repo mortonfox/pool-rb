@@ -26,7 +26,7 @@ module PoolRB
       stmt = <<~SQLSTMT
         REPLACE INTO `tokens` (`service`, `token`, `secret`) VALUES (?, ?, ?)
       SQLSTMT
-      @db.execute(stmt, service, token, secret)
+      @db.execute(stmt, [service, token, secret])
     end
 
     def get_token(service)
