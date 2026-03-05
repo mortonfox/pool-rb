@@ -1,7 +1,7 @@
 GEM
   remote: https://gem.coop/
   specs:
-    addressable (2.8.8)
+    addressable (2.8.9)
       public_suffix (>= 2.0.2, < 8.0)
     childprocess (5.1.0)
       logger (~> 1.5)
@@ -11,8 +11,8 @@ GEM
       childprocess (~> 5.0)
       logger (~> 1.6)
     logger (1.7.0)
-    public_suffix (7.0.2)
-    sqlite3 (2.9.0-x86_64-linux-gnu)
+    public_suffix (7.0.5)
+    sqlite3 (2.9.1-x86_64-linux-gnu)
 
 PLATFORMS
   x86_64-linux
