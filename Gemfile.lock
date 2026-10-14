@@ -13,9 +13,9 @@ GEM
     logger (1.7.0)
     mini_portile2 (2.8.9)
     public_suffix (7.0.5)
-    sqlite3 (2.9.6)
+    sqlite3 (2.10.0)
       mini_portile2 (~> 2.8.0)
-    sqlite3 (2.9.6-x86_64-linux-gnu)
+    sqlite3 (2.10.0-x86_64-linux-gnu)
 
 PLATFORMS
   x86_64-linux
@@ -29,4 +29,4 @@ RUBY VERSION
   ruby 3.4.2p28
 
 BUNDLED WITH
-  4.1.0.beta1
+  4.1.0.beta2
