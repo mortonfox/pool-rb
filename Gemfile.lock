@@ -13,9 +13,9 @@ GEM
     logger (1.7.0)
     mini_portile2 (2.8.9)
     public_suffix (7.0.5)
-    sqlite3 (2.10.0)
+    sqlite3 (2.10.2)
       mini_portile2 (~> 2.8.0)
-    sqlite3 (2.10.0-x86_64-linux-gnu)
+    sqlite3 (2.10.2-x86_64-linux-gnu)
 
 PLATFORMS
   x86_64-linux
