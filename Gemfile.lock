@@ -1,7 +1,7 @@
 GEM
   remote: https://gem.coop/
   specs:
-    addressable (2.9.0)
+    addressable (2.9.2)
       public_suffix (>= 2.0.2, < 8.0)
     childprocess (5.1.0)
       logger (~> 1.5)
@@ -29,4 +29,4 @@ RUBY VERSION
   ruby 3.4.2p28
 
 BUNDLED WITH
-  4.1.0.beta2
+  4.1.0.beta3
